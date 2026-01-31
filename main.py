@@ -5,7 +5,14 @@
 
 # DONE: Basic Schrenk span loading implementation (taper no twist)
 # DONE: Input parameters for span and lift distribution
-# DONE: Output spanwise lift distribution in CSV format
+# DONE: Calculate span load distribution
+# DONE: Calculate shear and bending moment distributions
+# DONE: Plot chord, lift, shear and bending moment distributions
+# TODO: Add the inertia
+# TODO: Generate a load case (aero + inertia)
+# TODO: Modify the span cuts to be more dense towards the tip
+# TODO: Output to CSV
+# TODO: Write a log file
 # TODO: Add control surface deflections
 # TODO: Add twist distributions
 # TODO: Add roll rate effects
@@ -17,6 +24,7 @@ if __name__ == "__main__":
     import numpy as np
     import matplotlib.pyplot as plt
     from functions import aircraft, lift_distribution, running_shear_bending
+    from plotting import plot_span_loading, plot_shear_bending
 
 # Define aircraft parameters
 aircraft = aircraft()
@@ -42,37 +50,20 @@ shear, bending_moment = running_shear_bending(aircraft['y_locations'],
 print(f"Shear Distribution: {shear}")
 print(f"Bending Moment Distribution: {bending_moment}")
 
-# Plot results
-fig, (ax1, ax2) = plt.subplots(2)
-plt.subplots_adjust(hspace=0.5)
-# Plot chord distribution
-ax1.plot(aircraft['y_locations'], aircraft['chord_distribution'], label='Chord Distribution')
-ax1.set_xlabel('Spanwise Location y [m]')
-ax1.set_ylabel('Chord Length [m]')
-ax1.set_title('Chord Distribution along Span')
-ax1.grid()
 
-# Plot lift coefficient distribution
-ax2.plot(aircraft['y_locations'], lift_distribution, label='Lift Coefficient Distribution', color='orange')
-ax2.set_xlabel('Spanwise Location y [m]')
-ax2.set_ylabel('Lift Coefficient Cl [-]')
-ax2.set_title('Lift Coefficient Distribution along Span')
-ax2.grid()
+## PLOTTING RESULTS ##
+print("PLOTTING RESULTS...")
+print("Select 1 for span loading")
+print("Select 2 for shear and bending moment")
+print("Select 3 for both")
+selection =input("Selection: ")
 
-fig, (ax3, ax4) = plt.subplots(2)
-plt.subplots_adjust(hspace=0.5)
-# Plot shear distribution
-ax3.plot(aircraft['y_locations'], shear, label='Shear Distribution', color='green')
-ax3.set_xlabel('Spanwise Location y [m]')
-ax3.set_ylabel('Shear Force [N]')
-ax3.set_title('Shear Force Distribution along Span')
-ax3.grid()
-# Plot bending moment distribution
-ax4.plot(aircraft['y_locations'], bending_moment, label='Bending Moment Distribution', color='red')
-ax4.set_xlabel('Spanwise Location y [m]')
-ax4.set_ylabel('Bending Moment [Nm]')
-ax4.set_title('Bending Moment Distribution along Span')
-ax4.grid()
-plt.show()
-
-
+if selection == '1':
+    plot_span_loading(aircraft, lift_distribution)
+elif selection == '2':
+    plot_shear_bending(aircraft, shear, bending_moment)
+elif selection == '3':
+    plot_span_loading(aircraft, lift_distribution)
+    plot_shear_bending(aircraft, shear, bending_moment)
+else:   
+    print("Invalid selection, please select 1, 2 or 3")

@@ -1,5 +1,5 @@
 # Functions fo the span loads program
-# Sean O'Meara June 2024
+# Sean O'Meara Jan 2026
 
 # Functions required:
 # 1. aircraft() - define aircraft parameters and geometry
@@ -59,14 +59,23 @@ def lift_distribution(y, chord_distribution, span, ref_area ):
 
 def running_shear_bending(y, lift_dist, span):
     # Calculate running shear and bending moment from lift distribution
-    dy = y[1] - y[0]
     shear = np.zeros_like(y)
     bending_moment = np.zeros_like(y)
-    for i in range(len(y)-1, -1, -1):
+
+    for i in reversed(range(len(y))):
+        input(f"the loop counter is {i}")
         if i == len(y)-1:
-            shear[i] = 0
-            bending_moment[i] = 0
+           shear[i] = 0
+           bending_moment[i] = 0
         else:
-            shear[i] = shear[i+1] + lift_dist[i]*dy
-            bending_moment[i] = bending_moment[i+1] + shear[i]*dy
+            dy = y[i+1] - y[i]
+            lift_per_length = lift_dist[i]  # Assuming lift_dist is per unit length
+            shear[i] = shear[i+1] + lift_per_length * dy
+            bending_moment[i] = bending_moment[i+1] + shear[i+1] * dy
     return shear, bending_moment
+
+
+def distribute_mass():
+    # Distributes the mass based on local chord length.
+    # 
+    pass
