@@ -45,4 +45,23 @@ def plot_shear_bending(aircraft, shear, bending_moment):
     ax4.grid()
     plt.show()
 
+def plot_mass_distribution(aircraft, mass_distribution):
+    # Plot shear and bending moment distributions``
+    fig, (ax1, ax4) = plt.subplots(2)
+    plt.subplots_adjust(hspace=0.5)
 
+    # Plot shear distribution
+    ax1.plot(aircraft['y_locations'], aircraft['chord_distribution'], label='Chord Distribution')
+    ax1.set_xlabel('Spanwise Location y [m]')
+    ax1.set_ylabel('Chord Length [m]')
+    ax1.set_title('Chord Distribution along Span')
+    ax1.grid()
+
+    # Plot bending moment distribution
+    ax4.plot(aircraft['y_locations'], mass_distribution, label='Mass Distribution', color='red')
+    ax4.set_xlabel('Spanwise Location y [m]')
+    ax4.set_ylabel('Mass per Unit Length [kg/m]')
+    ax4.set_title('Mass Distribution along Span')
+    ax4.grid()
+    plt.show()
+    return
