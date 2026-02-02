@@ -3,6 +3,7 @@
 # Debug and log files
 *.log
 *scrap*.py
+*.txt
 
 
 # Byte-compiled / optimized / DLL files

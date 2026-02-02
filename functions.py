@@ -22,7 +22,6 @@ def aircraft():
     # Calculate parameters
     area_ref = root_chord * span * (1 + taper_ratio) / 2
     span_locations = np.linspace(0, span/2, num=no_span_locations)
-    input(f"Span locations (half span): {span_locations} m")
     eta = 2*span_locations/span
     chord_distribution = np.zeros(no_span_locations)
     for i in range(len(eta)):
@@ -64,7 +63,6 @@ def running_shear_bending_distributed(y, distribution):
     bending_moment = np.zeros_like(y)
 
     for i in reversed(range(len(y))):
-        input(i)
         if i == len(y)-1:
            shear[i] = 0
            bending_moment[i] = 0
@@ -83,7 +81,6 @@ def running_shear_bending_point(y, distribution):
     bending_moment = np.zeros_like(y)
 
     for i in reversed(range(len(y))):
-        input(i)
         if i == len(y)-1:
            shear[i] = distribution[i]
            bending_moment[i] = 0 #Assumes no a applied moments
@@ -93,34 +90,25 @@ def running_shear_bending_point(y, distribution):
             bending_moment[i] = bending_moment[i+1] + shear[i+1] * dy
     return shear, bending_moment
 
+
 def distribution_mass(mass, y, chord_distribution):
     # Distributes the mass based on local chord length.
     # Mass per unit length is proportional to chord length.
     # Note the tip panel is is at y[max-1] and is from y[max] to y[(max-2+max-1/2)]
-    area = (chord_distribution[0]+chord_distribution[-1])/2 * (y[-1]-y[0])
-    mass_per_area = mass / area
-    print(f"Mass per unit area: {mass_per_area} kg/m^2")
     
     mass_per_panel = np.zeros_like(y)
     for i in range(len(y)):
         if i == 0: # first panel
             mass_per_panel[i] = chord_distribution[i] * (y[i+1]-y[i])/2
         elif i == len(y)-1: # last panel
-            print(f"Iteration {i}, Station {y[i]}")
-            input((y[i]-(y[i-1]+y[i-2])/2))
             mass_per_panel[i-1] =chord_distribution[i] * (y[i]-(y[i-1]+y[i-2])/2)
             mass_per_panel[i] = 0.0
         else:
             mass_per_panel[i] = chord_distribution[i] * (y[i+1]-y[i-1])/2
 
-    print(mass_per_panel)
-
     # Scale distribution to match the total mass
     total_mass_check, bend = running_shear_bending_point(y, mass_per_panel)
     mass_per_panel = mass/total_mass_check[0] * mass_per_panel
-    print(f"Check of the shear {total_mass_check*mass/total_mass_check[0]}")
-    print(f"Check the BM calculator {bend*mass/total_mass_check[0]}")
-    
-    
+
     return mass_per_panel
 
